@@ -1,0 +1,36 @@
+name: Deploy santospedia-manutencao
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v3
+
+      - name: Login no Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build e push da imagem
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/santospedia-manutencao:latest
+
+      - name: Configurar kubeconfig
+        run: |
+          echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 -d > kubeconfig
+        env:
+          KUBECONFIG: kubeconfig
+
+      - name: Aplicar Manifests no cluster
+        run: |
+          kubectl --kubeconfig=kubeconfig apply -f k8s/

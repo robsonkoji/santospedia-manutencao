@@ -1,0 +1,51 @@
+@import url('https://fonts.googleapis.com/css2?family=Russo+One&display=swap');
+
+.title {
+  font-size: 3rem;
+  color: #FFD700;
+  text-shadow: 3px 3px 6px #000;
+  font-family: 'Russo One', sans-serif;
+  transform: skewX(-10deg); /* dá o efeito itálico */
+  letter-spacing: 1px;
+  margin-bottom: 0.5rem;
+}
+
+.app {
+  height: 100vh;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Arial Black', sans-serif;
+}
+
+.overlay {
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 40px;
+  border-radius: 20px;
+  text-align: center;
+  color: #fff;
+  box-shadow: 0 0 15px #000;
+}
+
+.logo {
+  width: 150px;
+  margin-bottom: 20px;
+  border-radius: 12px;
+  border: 2px solid #fff;
+}
+
+.subtitle {
+  font-size: 1.5rem;
+  margin-top: 0.5rem;
+  color: #fff;
+  font-family: 'Arial', sans-serif;
+  transform: skewX(-10deg);
+}
+
+.description {
+  font-size: 1.1rem;
+  font-style: italic;
+  color: #ccc;
+}
