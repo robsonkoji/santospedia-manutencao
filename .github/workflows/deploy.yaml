@@ -18,11 +18,12 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build e push da imagem
+      - name: Build e push multi-arquitetura
         uses: docker/build-push-action@v5
         with:
           context: .
           push: true
+          platforms: linux/amd64,linux/arm64
           tags: ${{ secrets.DOCKER_USERNAME }}/santospedia-manutencao:latest
 
       - name: Configurar kubeconfig
