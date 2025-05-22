@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout código
+      - name: Checkout c??digo
         uses: actions/checkout@v3
 
       - name: Login no Docker Hub
@@ -33,4 +33,4 @@ jobs:
 
       - name: Aplicar Manifests no cluster (com TLS ignorado)
         run: |
-          kubectl --kubeconfig=kubeconfig apply --validate=false -f k8s/
+	  kubectl --kubeconfig=kubeconfig apply -f k8s/ --insecure-skip-tls-verify
