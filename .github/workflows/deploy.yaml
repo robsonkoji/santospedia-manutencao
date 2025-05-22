@@ -31,6 +31,6 @@ jobs:
         env:
           KUBECONFIG: kubeconfig
 
-      - name: Aplicar Manifests no cluster
+      - name: Aplicar Manifests no cluster (com TLS ignorado)
         run: |
-          kubectl --kubeconfig=kubeconfig apply -f k8s/
+          kubectl --kubeconfig=kubeconfig apply --validate=false -f k8s/
