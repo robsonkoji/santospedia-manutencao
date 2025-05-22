@@ -31,6 +31,6 @@ jobs:
         env:
           KUBECONFIG: kubeconfig
 
-      - name: Aplicar Manifests no cluster (com TLS ignorado)
+      - name: Aplicar Manifests no cluster (ignorar TLS)
         run: |
-	  kubectl --kubeconfig=kubeconfig apply -f k8s/ --insecure-skip-tls-verify
+          kubectl --kubeconfig=kubeconfig apply -f k8s/ --insecure-skip-tls-verify
