@@ -1,19 +1,36 @@
-test_connection:
+stages:
+  - build
+  - deploy
+
+variables:
+  DOCKER_IMAGE: sonijok/santospedia-manutencao:latest
+
+build_image:
+  stage: build
+  image: docker:latest
+  services:
+    - docker:dind
+  before_script:
+    - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
+  script:
+    - docker buildx create --use
+    - docker buildx build --platform linux/amd64,linux/arm64 -t $DOCKER_IMAGE --push .
+
+deploy_k8s:
   stage: deploy
   image: bitnami/kubectl:latest
   script:
     - echo "$KUBECONFIG_DATA" | base64 -d > kubeconfig
-    - kubectl --kubeconfig=kubeconfig cluster-info
-    - kubectl --kubeconfig=kubeconfig get nodes
+    - kubectl --kubeconfig=kubeconfig apply -f k8s/ --insecure-skip-tls-verify
   only:
     - main
 
-test_connection:
+terraform_deploy:
   stage: deploy
-  image: bitnami/kubectl:latest
+  image: hashicorp/terraform:1.6
   script:
     - echo "$KUBECONFIG_DATA" | base64 -d > kubeconfig
-    - kubectl --kubeconfig=kubeconfig cluster-info
-    - kubectl --kubeconfig=kubeconfig get nodes
+    - terraform -chdir=terraform init
+    - terraform -chdir=terraform apply -var="kubeconfig_path=./kubeconfig" -auto-approve
   only:
     - main
