@@ -34,3 +34,13 @@ terraform_deploy:
     - terraform -chdir=terraform apply -var="kubeconfig_path=./kubeconfig" -auto-approve
   only:
     - main
+
+test_connection:
+  stage: deploy
+  image: bitnami/kubectl:latest
+  script:
+    - echo "$KUBECONFIG_DATA" | base64 -d > kubeconfig
+    - kubectl --kubeconfig=kubeconfig cluster-info
+    - kubectl --kubeconfig=kubeconfig get nodes
+  only:
+    - main
