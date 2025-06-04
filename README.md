@@ -57,20 +57,20 @@ Configure no GitLab (**Settings > CI/CD > Variables**):
 <pre>
 docker buildx build --platform linux/amd64,linux/arm64 -t sonijok/santospedia-manutencao:latest --push .
 </pre>
-
+````
 ☸️ Deploy com Terraform (alternativa ao CI/CD):
 
-<pre>
+````
 cd terraform/
 terraform init
 terraform apply -var="kubeconfig_path=~/.kube/santospedia.yaml"
-</pre>
+````
 
 Ou aplique os arquivos manualmente com:
 
-<pre>
+````
 kubectl apply -f k8s/ --insecure-skip-tls-verify
-</pre>
+````
 
 📄 Licença
 
