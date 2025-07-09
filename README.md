@@ -15,7 +15,7 @@ Este projeto exibe a página de manutenção do site [Santospedia](https://santo
 ---
 
 ## 📁 Estrutura do Projeto
-
+```bash
 santospedia-manutencao/
 ├── Dockerfile               # Build da imagem com React + Nginx
 ├── nginx.conf               # Configuração customizada do Nginx
@@ -34,7 +34,7 @@ santospedia-manutencao/
 ├── deployment.yaml
 ├── service.yaml
 └── ingress.yaml
-
+````
 ---
 
 ## 🚀 Deploy com GitLab CI/CD
@@ -54,9 +54,9 @@ Configure no GitLab (**Settings > CI/CD > Variables**):
 ## 📦 Build local e push manual (opcional)
 
 ```bash
-<pre>
+
 docker buildx build --platform linux/amd64,linux/arm64 -t sonijok/santospedia-manutencao:latest --push .
-</pre>
+
 ````
 ☸️ Deploy com Terraform (alternativa ao CI/CD):
 
@@ -72,13 +72,24 @@ Ou aplique os arquivos manualmente com:
 kubectl apply -f k8s/ --insecure-skip-tls-verify
 ````
 
-📄 Licença
+---
 
-Este projeto é licenciado sob a licença MIT. Veja o arquivo LICENSE para mais detalhes.
+## 🔒 Aviso Legal sobre o Nome "Santospedia".
 
-⸻
+O nome **"Santospedia"**, bem como seu logotipo e identidade visual, são de uso exclusivo deste projeto e de seus mantenedores.
+Não é permitida a reutilização, redistribuição ou modificação do nome "Santospedia" para qualquer outro projeto, aplicação ou serviço, sem autorização expressa por escrito.
 
-🤝 Contribuições
+Este aviso não restringe o uso do código-fonte, que permanece disponível sob os termos da licença MIT. Ele apenas regula o uso do nome e identidade do projeto.
+
+---
+
+## 📄 Licença
+
+Este projeto é licenciado sob a licença MIT. Veja o arquivo [LICENSE](./LICENSE) para mais detalhes.
+
+---
+
+### 🤝 Contribuições
 
 Pull requests são bem-vindos! Fique à vontade para abrir issues ou sugerir melhorias. É um projeto comunitário voltado para manter a história do Santos FC viva.
->>>>>>> d7ae5d8 (primeiro commit no GitLab)
+
