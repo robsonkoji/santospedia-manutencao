@@ -4,14 +4,13 @@ on:
   push:
     branches: [ main ]
   workflow_dispatch: 
-    
 
 jobs:
   deploy:
     runs-on: [self-hosted, linux]
 
     steps:
-      - name: Checkout codigo
+      - name: Checkout código
         uses: actions/checkout@v3
 
       - name: Login no Docker Hub
@@ -23,19 +22,20 @@ jobs:
       - name: Configurar Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      - name: Build e push multi-arquitetura
+      - name: Build e push multi-arquitetura com cache
         uses: docker/build-push-action@v5
         with:
           context: .
           push: true
           platforms: linux/amd64,linux/arm64
           tags: ${{ secrets.DOCKER_USERNAME }}/santospedia-manutencao:latest
+          cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/santospedia-manutencao:buildcache
+          cache-to: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/santospedia-manutencao:buildcache,mode=max
 
       - name: Configurar kubeconfig
         run: |
+          mkdir -p $HOME/.kube
           echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 -d > $HOME/.kube/santospedia.yaml
-        env:
-          KUBECONFIG: kubeconfig
 
       - name: Aplicar Manifests no cluster (ignorar TLS)
         run: |
