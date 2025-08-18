@@ -33,10 +33,10 @@ jobs:
 
       - name: Configurar kubeconfig
         run: |
-          echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 -d > kubeconfig
+          echo "${{ secrets.KUBE_CONFIG_DATA }}" | base64 -d > $HOME/.kube/santospedia.yaml
         env:
           KUBECONFIG: kubeconfig
 
       - name: Aplicar Manifests no cluster (ignorar TLS)
         run: |
-          kubectl --kubeconfig=kubeconfig apply -f k8s/ --insecure-skip-tls-verify
+          kubectl --kubeconfig=$HOME/.kube/santospedia.yaml apply -f k8s/ --insecure-skip-tls-verify
