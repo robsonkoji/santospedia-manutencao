@@ -5,12 +5,9 @@ metadata:
   namespace: santospedia
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: websecure
+    traefik.ingress.kubernetes.io/router.tls: "true"
     traefik.ingress.kubernetes.io/router.tls.certresolver: le
 spec:
-  tls:
-    - hosts:
-        - santospedia.com.br
-      secretName: santospedia-tls
   rules:
     - host: santospedia.com.br
       http:
