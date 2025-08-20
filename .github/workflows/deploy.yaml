@@ -29,15 +29,27 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build e push multi-arquitetura com cache
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: true
-          platforms: linux/amd64,linux/arm64
-          tags: ${{ secrets.DOCKER_USERNAME }}/santospedia-manutencao:latest
-          cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/santospedia-manutencao:buildcache
-          cache-to: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/santospedia-manutencao:buildcache,mode=max
+      # Build separado por arquitetura
+      - name: Build e push imagem AMD64
+        run: |
+          docker buildx build \
+            --platform linux/amd64 \
+            -t ${{ secrets.DOCKER_USERNAME }}/santospedia-manutencao:amd64 \
+            --push .
+
+      - name: Build e push imagem ARM64
+        run: |
+          docker buildx build \
+            --platform linux/arm64 \
+            -t ${{ secrets.DOCKER_USERNAME }}/santospedia-manutencao:arm64 \
+            --push .
+
+      - name: Criar e publicar manifest multi-arch
+        run: |
+          docker manifest create ${{ secrets.DOCKER_USERNAME }}/santospedia-manutencao:latest \
+            --amend ${{ secrets.DOCKER_USERNAME }}/santospedia-manutencao:amd64 \
+            --amend ${{ secrets.DOCKER_USERNAME }}/santospedia-manutencao:arm64
+          docker manifest push ${{ secrets.DOCKER_USERNAME }}/santospedia-manutencao:latest
 
       - name: Configurar kubeconfig
         run: |
