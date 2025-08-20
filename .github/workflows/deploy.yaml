@@ -8,22 +8,20 @@ on:
 jobs:
   deploy:
     runs-on: [self-hosted, linux]
-    timeout-minutes: 60   # garante tempo suficiente para builds grandes
 
     env:
-      DOCKER_CLIENT_TIMEOUT: 600
-      COMPOSE_HTTP_TIMEOUT: 600
+      DOCKER_CLIENT_TIMEOUT: 300
+      COMPOSE_HTTP_TIMEOUT: 300
 
     steps:
       - name: Checkout código
         uses: actions/checkout@v3
 
+      - name: Resetar builders antigos
+        run: docker buildx rm mybuilder || true
+
       - name: Configurar Docker Buildx
         uses: docker/setup-buildx-action@v2
-        with:
-          driver-opts: |
-            image=moby/buildkit:latest
-            network=host
 
       - name: Login no Docker Hub
         uses: docker/login-action@v2
@@ -31,29 +29,21 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # Build AMD64
+      # Build separado por arquitetura
       - name: Build e push imagem AMD64
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: true
-          platforms: linux/amd64
-          tags: ${{ secrets.DOCKER_USERNAME }}/santospedia-manutencao:amd64
-          cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/santospedia-manutencao:cache-amd64
-          cache-to: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/santospedia-manutencao:cache-amd64,mode=max
+        run: |
+          docker buildx build \
+            --platform linux/amd64 \
+            -t ${{ secrets.DOCKER_USERNAME }}/santospedia-manutencao:amd64 \
+            --push .
 
-      # Build ARM64
       - name: Build e push imagem ARM64
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          push: true
-          platforms: linux/arm64
-          tags: ${{ secrets.DOCKER_USERNAME }}/santospedia-manutencao:arm64
-          cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/santospedia-manutencao:cache-arm64
-          cache-to: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/santospedia-manutencao:cache-arm64,mode=max
+        run: |
+          docker buildx build \
+            --platform linux/arm64 \
+            -t ${{ secrets.DOCKER_USERNAME }}/santospedia-manutencao:arm64 \
+            --push .
 
-      # Criar e publicar manifest multi-arch
       - name: Criar e publicar manifest multi-arch
         run: |
           docker manifest create ${{ secrets.DOCKER_USERNAME }}/santospedia-manutencao:latest \
